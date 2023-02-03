@@ -4,8 +4,8 @@ resource "aws_launch_configuration" "example" {
     security_groups = [aws_security_group.instance.id]
 
     user_data = templatefile("user-data.sh", { 
-        db_address = data.terraform_remote_state.db.output.address
-        db_port = data.terraform_remote_state.db.output.port
+        db_address = data.terraform_remote_state.db.outputs.address
+        db_port = data.terraform_remote_state.db.outputs.port
         server_port = var.server_port
           })
     lifecycle {
@@ -134,7 +134,7 @@ data "terraform_remote_state" "db" {
   config = {
     
     bucket = "terraform-up-and-running-state-jd" 
-    key = "stage/services/webserver-cluster/terraform.tfstate"
+    key = "stage/data-stores/mysql/terraform.tfstate"
     region = "us-east-1"
   }
 }
