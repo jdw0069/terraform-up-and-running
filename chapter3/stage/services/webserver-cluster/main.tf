@@ -3,11 +3,11 @@ resource "aws_launch_configuration" "example" {
     instance_type = "t2.micro"
     security_groups = [aws_security_group.instance.id]
 
-    user_data = <<-EOF
-                #!/bin/bash
-                echo "Hello, World" > index.html
-                nohup busybox httpd -f -p 8080 &
-                EOF
+    user_data = templatefile("user-data.sh", { 
+        db_address = data.terraform_remote_state.db.output.address
+        db_port = data.terraform_remote_state.db.output.port
+        server_port = var.server_port
+          })
     lifecycle {
       create_before_destroy = true
     }
@@ -33,8 +33,8 @@ resource "aws_security_group" "instance" {
   name = "terraform-instance-security-group"
 
   ingress {
-    from_port   = 8080
-    to_port     = 8080
+    from_port   = var.server_port
+    to_port     = var.server_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -125,5 +125,16 @@ resource "aws_security_group" "alb" {
     to_port = 0
     protocol = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+data "terraform_remote_state" "db" {
+  backend = "s3"
+
+  config = {
+    
+    bucket = "terraform-up-and-running-state-jd" 
+    key = "stage/services/webserver-cluster/terraform.tfstate"
+    region = "us-east-1"
   }
 }
