@@ -16,7 +16,7 @@ resource "aws_launch_configuration" "example" {
 
   # Render the User Data script as a template
   user_data = templatefile("${path.module}/user-data.sh", {
-    server_port = var.server_port
+    server_port = 8080
     db_address  = data.terraform_remote_state.db.outputs.address
     db_port     = data.terraform_remote_state.db.outputs.port
   })
@@ -45,18 +45,18 @@ resource "aws_autoscaling_group" "example" {
 }
 
 resource "aws_security_group" "instance" {
-  name = var.instance_security_group_name
+  name = "test-security-group"
 
   ingress {
-    from_port   = var.server_port
-    to_port     = var.server_port
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
 resource "aws_lb" "example" {
-  name               = var.alb_name
+  name               = "${var.cluster_name}-loadbalancer"
   load_balancer_type = "application"
   subnets            = data.aws_subnets.default.ids
   security_groups    = [aws_security_group.alb.id]
@@ -80,8 +80,8 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_lb_target_group" "asg" {
-  name     = var.alb_name
-  port     = var.server_port
+  name     = "${var.cluster_name}-lb-target-group"
+  port     = 8080
   protocol = "HTTP"
   vpc_id   = data.aws_vpc.default.id
 
@@ -113,7 +113,7 @@ resource "aws_lb_listener_rule" "asg" {
 }
 
 resource "aws_security_group" "alb" {
-  name = var.alb_security_group_name
+  name = "${var.cluster_name}-alb-sg-name"
 
   # Allow inbound HTTP requests
   ingress {
