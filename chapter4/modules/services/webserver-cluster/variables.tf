@@ -13,3 +13,18 @@ variable "db_remote_state_key" {
   type        = string
   default     = "terraform-up-and-running-jd"
 }
+
+variable "instance_type" {
+ description = "The type of EC2 Instances to run" 
+ type = string
+}
+
+variable "min_size" {
+  description = "The minimum number of EC2 instances in the ASG"
+  type = number
+}
+
+variable "max_size" {
+  description = "The maximum number of EC2 instances in the ASG"
+  type = number
+}
