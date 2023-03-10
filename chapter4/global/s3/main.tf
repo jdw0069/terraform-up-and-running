@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "terraform-up-and-running-state-jd"
+  bucket = "terraform-up-and-running-state-jd-demo"
 
   lifecycle {
     prevent_destroy = true

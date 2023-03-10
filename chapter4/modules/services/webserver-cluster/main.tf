@@ -141,6 +141,7 @@ resource "aws_security_group_rule" "allow_http_inbound" {
   from_port = local.any_port
   to_port = local.any_port
   protocol = local.any_protocol
+  cidr_blocks = local.all_ips
 }
 
 data "terraform_remote_state" "db" {

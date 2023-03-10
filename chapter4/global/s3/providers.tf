@@ -1,14 +1,15 @@
 provider "aws" {
     region = "us-east-1"
+    profile = "terraform-user-demo"
 }
 
 terraform {
- backend "s3" {
-    bucket = "terraform-up-and-running-state-jd" 
-    key = "global/s3/terraform.tfstate"
-    region = "us-east-1"
-
-    dynamodb_table = "terraform-up-and-running-locks-jd" 
-    encrypt = true
- }   
+backend "s3" {
+   bucket = "terraform-up-and-running-state-jd-demo" 
+   key = "global/s3/terraform.tfstate"
+   region = "us-east-1"
+   profile = "terraform-user-demo"
+   dynamodb_table = "terraform-up-and-running-locks-jd" 
+   encrypt = true
+}   
 }
