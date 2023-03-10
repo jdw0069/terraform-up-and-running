@@ -134,7 +134,7 @@ resource "aws_security_group_rule" "allow_http_inbound" {
   cidr_blocks = local.all_ips
 }
 
-resource "aws_security_group_rule" "allow_http_inbound" {
+resource "aws_security_group_rule" "allow_all_inbound" {
   type = "egress"
   security_group_id = aws_security_group.alb.id
 
@@ -148,9 +148,10 @@ data "terraform_remote_state" "db" {
   backend = "s3"
 
   config = {
-    bucket = "${var.db_remote_state_bucket}"
-    key    = "${var.db_remote_state_key}"
+    bucket = var.db_remote_state_bucket
+    key    = var.db_remote_state_key
     region = "us-east-1"
+  
   }
 }
 
